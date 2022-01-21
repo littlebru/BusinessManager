@@ -20,6 +20,13 @@ public class NovaEmpresaServlet extends HttpServlet {
 		// trabalhando com parâmetros
 		String nomeEmpresa = request.getParameter("nome");
 		
+		Empresa empresa = new Empresa();
+		empresa.setNome(nomeEmpresa);
+		
+		// simulando um banco
+		Banco banco = new Banco();
+		banco.adiciona(empresa);
+		
 		// Mensagem que aparecerá no browser
 		PrintWriter out = response.getWriter();
 		out.println("<html>");
