@@ -1,8 +1,10 @@
 package br.com.gerenciador.servlet;
 
+import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,13 +29,14 @@ public class NovaEmpresaServlet extends HttpServlet {
 		Banco banco = new Banco();
 		banco.adiciona(empresa);
 		
-		// Mensagem que aparecerá no browser
-		PrintWriter out = response.getWriter();
-		out.println("<html>");
-		out.println("<body>");
-		out.println("<p> Empresa "+ nomeEmpresa +" cadastrada com sucesso! </p>");
-		out.println("</body>");
-		out.println("</html>");
+		// chamando o JSP para visualizar a mensagem com um despachador de requisição
+		RequestDispatcher rd = request.getRequestDispatcher("/novaEmpresaCriada.jsp");
+		
+		// utilizando a requisição e setar o valor para a requisição
+		request.setAttribute("Empresa", empresa.getNome());
+		
+		// envia os dois objetos ao caminho especificado
+		rd.forward(request, response);
 		
 		System.out.println("Empresa: "+ nomeEmpresa +"\nStatus: registrada");
 	}
