@@ -3,6 +3,9 @@ package br.com.gerenciador.servlet;
 import java.awt.geom.RoundRectangle2D;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,27 +19,34 @@ public class NovaEmpresaServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
 		System.out.println("Cadastrando nova empresa...");
 		
 		// trabalhando com parâmetros
 		String nomeEmpresa = request.getParameter("nome");
+		String paramDataEmpresa = request.getParameter("data");
+		
+		Date dataAbertura = null;
+		// formatação da data para o tipo Date e no formato dd/MM/yyyy
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			dataAbertura = sdf.parse(paramDataEmpresa);
+		} catch (ParseException e) {
+			throw new ServletException(e);
+		}
+
 		
 		Empresa empresa = new Empresa();
 		empresa.setNome(nomeEmpresa);
+		empresa.setDataAbertura(dataAbertura);
 		
 		// simulando um banco
 		Banco banco = new Banco();
 		banco.adiciona(empresa);
 		
-		// chamando o JSP para visualizar a mensagem com um despachador de requisição
-		RequestDispatcher rd = request.getRequestDispatcher("/novaEmpresaCriada.jsp");
-		
-		// utilizando a requisição e setar o valor para a requisição
-		request.setAttribute("Empresa", empresa.getNome());
-		
-		// envia os dois objetos ao caminho especificado
-		rd.forward(request, response);
+		// redirecionando dados para a pagina de listagem de empresas
+		response.sendRedirect("listaEmpresas");
 		
 		System.out.println("Empresa: "+ nomeEmpresa +"\nStatus: registrada");
 	}
